@@ -1,0 +1,110 @@
+<section class="content mb-5">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-primary mt-5 pb-5">
+          <div class="card-header">
+            <h4 class="card-title">Shopping Cart</h4>
+          </div>
+          <div class="card-body">
+            {% if cart_items|length == 0 %}
+            <p>Your cart is empty.</p>
+            <div class="float-right">
+              <a
+                href="{{ base_url }}/payment/status"
+                class="btn btn-primary mb-2"
+                >Cek My Payment Status</a
+              >
+            </div>
+            {% else %}
+            <table class="table table-bordered">
+              <div class="float-right">
+                <a
+                  href="{{ base_url }}/payment/status"
+                  class="btn btn-primary mb-2"
+                  >Cek My Payment Status</a
+                >
+              </div>
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart_items %}
+                <tr>
+                  <td>
+                    <img
+                      src="{{ base_url }}/asset/image/uploads/{{ item.image }}"
+                      alt="{{ item.name }}"
+                      width="100"
+                    />
+                  </td>
+                  <td>{{ item.name }}</td>
+                  <td>
+                    <form
+                      action="{{ base_url }}/cart/update"
+                      method="post"
+                      class="form-inline d-flex justify-content-center"
+                    >
+                      <input
+                        type="hidden"
+                        name="cart_id"
+                        value="{{ item.cart_id }}"
+                      />
+                      <input
+                        type="number"
+                        name="quantity"
+                        value="{{ item.quantity }}"
+                        min="1"
+                        class="form-control"
+                        style="width: 60px; margin-right: 10px"
+                      />
+                      <button type="submit" class="btn btn-primary btn-sm w-25">
+                        Update
+                      </button>
+                    </form>
+                  </td>
+                  <td>{{ item.price | number_format(2) }}</td>
+                  <td>{{ (item.price * item.quantity) | number_format(2) }}</td>
+                  <td>
+                    <form
+                      action="{{ base_url }}/cart/remove"
+                      method="post"
+                      style="display: inline"
+                    >
+                      <input
+                        type="hidden"
+                        name="cart_id"
+                        value="{{ item.cart_id }}"
+                      />
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        Remove
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <div class="float-right">
+              <h4>Total: ${{ total_price | number_format(2) }}</h4>
+              <a href="{{ base_url }}/cart/order" class="btn btn-success"
+                >Order</a
+              >
+              <a href="{{ base_url }}/user" class="btn btn-secondary"
+                >Add Other Product</a
+              >
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

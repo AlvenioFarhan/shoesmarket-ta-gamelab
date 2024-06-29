@@ -1,0 +1,176 @@
+// NAVBAR profil after login
+
+//CAROUSEL COLOR BUTTON
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: black; /* Set the background color to black */
+  border-radius: 50%; /* Optional: makes the background color circular */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  filter: invert(100%); /* Makes the arrows white */
+}
+
+//REVIEW CARD CSS
+.ratings {
+  margin-right: 10px;
+}
+
+.ratings i {
+  color: #cecece;
+  font-size: 32px;
+}
+
+.rating-color {
+  color: #fbc634 !important;
+}
+
+// CARD
+.product {
+  margin: 0;
+
+  //   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(0%, 0%);
+  width: 300px;
+  height: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  //   background: #b1b1ff;
+  overflow: hidden;
+}
+.product .imgbox {
+  height: 200px;
+  //   height: 100%;
+  box-sizing: border-box;
+}
+.product .imgbox img {
+  //   display: block;
+  width: auto;
+  margin: 10px auto 0;
+}
+.specifies {
+  position: absolute;
+  width: 100%;
+  bottom: -160px;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  transition: 0.5s;
+}
+.product:hover .specifies {
+  bottom: 0;
+}
+.specifies h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  width: 100%;
+}
+.specifies h2 span {
+  font-size: 15px;
+  color: #ccc;
+  font-weight: normal;
+}
+.specifies .price {
+  position: absolute;
+  top: 12px;
+  right: 25px;
+  font-weight: bold;
+  color: #000;
+  font-size: 30px;
+}
+label {
+  display: block;
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 15px;
+}
+ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  list-style: none;
+  margin: 5px 5px 0;
+  font-size: 15px;
+  font-style: normal;
+  color: #ccc;
+}
+ul li:first-child {
+  margin-left: 0;
+}
+
+.btn {
+  display: block;
+  padding: 5px;
+  color: #fff;
+  margin: 10px 0 0;
+  width: 100%;
+  font-size: 13px;
+  border-radius: 2px;
+}
+
+// ===================================
+
+// NAVBAR
+
+$size-icon: 10px;
+$color-text: rgb(0, 0, 0);
+
+.size-icon-login {
+  height: $size-icon;
+}
+
+@mixin button-bg($bg) {
+  background: $bg;
+  &:hover {
+    background: darken($bg, 8%);
+    transition: all 0.3s ease;
+  }
+  &:active {
+    background: darken($bg, 25%);
+  }
+}
+
+.btn {
+  color: white;
+  text-decoration: none;
+  padding: 5px 5px;
+  border-radius: 3px;
+  //   font-family: "Poiret One", cursive;
+  font-size: 1em;
+}
+
+.btn-blue {
+  @include button-bg(#3498db);
+}
+
+.black-text-custom {
+  color: $color-text;
+}
+
+.navbar {
+  z-index: 1050;
+}
+.dropdown-menu {
+  z-index: 1060;
+}
+
+.btn-outline-dark {
+  color: black;
+  color: hover white;
+}
+
+#btn-back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+  width: 60px;
+  height: 60px;
+  padding: 5px;
+}

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [{ "src": "public/index.php", "use": "@vercel/php" }],
+  "routes": [{ "src": "/(.*)", "dest": "public/index.php" }],
+  "env": {
+    "DATABASE_HOST": "your_database_host",
+    "DATABASE_NAME": "your_database_name",
+    "DATABASE_USER": "your_database_user",
+    "DATABASE_PASS": "your_database_password"
+  }
+}

@@ -1,0 +1,69 @@
+<div class="login-box">
+  <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+      <a href="/" class="h1"><b>Shoes</b>Market</a>
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">Sign in to start your session</p>
+      <form action="/login" method="post">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            name="username"
+            class="form-control"
+            placeholder="Username"
+            required
+          />
+        </div>
+        <div class="input-group mb-3">
+          <input
+            type="password"
+            name="password"
+            id="password"
+            class="form-control"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <div class="icheck-primary">
+          <input type="checkbox" id="show-password" />
+          <label for="show-password"> Show Password </label>
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <div class="icheck-primary">
+              <input type="checkbox" id="remember" value="agree" required />
+              <label for="remember"> Remember Me </label>
+            </div>
+          </div>
+          <div class="col-4">
+            <input
+              type="submit"
+              class="btn btn-primary btn-block"
+              value="Sign In"
+            />
+          </div>
+        </div>
+      </form>
+      <p class="mb-1">
+        <a href="/forgot-password">I forgot my password</a>
+      </p>
+      <p class="mb-0">
+        <a href="/register" class="text-center">Register a new membership</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById("show-password")
+    .addEventListener("change", function () {
+      var passwordInput = document.getElementById("password");
+      if (this.checked) {
+        passwordInput.type = "text";
+      } else {
+        passwordInput.type = "password";
+      }
+    });
+</script>

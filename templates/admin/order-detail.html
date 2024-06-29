@@ -1,0 +1,277 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header"></section>
+
+  <!-- DATA ORDER -->
+  <section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+          <div class="inner">
+            <h3>{{ orders | length }}</h3>
+            <p>Orders</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-bag"></i>
+          </div>
+          <a href="#" class="small-box-footer"
+            >More info <i class="fas fa-arrow-circle-right"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+    <!-- /.row -->
+  </section>
+
+  <!-- PAGE ADMIN -->
+  <div class="wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h1 class="card-title">ORDER DETAILS</h1>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="orderTable" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Total Price</th>
+                      <th>Payment Method</th>
+                      <th>Status</th>
+                      <th>View Details</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for order in orders %}
+                    <tr>
+                      <td>{{ order.order_id }}</td>
+                      <td>{{ order.username }}</td>
+                      <td>{{ order.email }}</td>
+                      <td>{{ order.total_price }}</td>
+                      <td>{{ order.payment_method }}</td>
+                      <td>{{ order.status }}</td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-toggle="modal"
+                          data-target="#orderDetailModal"
+                          data-order-id="{{ order.order_id }}"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                      <td>
+                        {% if order.status == 'Paid' %}
+                        <button
+                          type="button"
+                          class="btn btn-success confirm-order-btn"
+                          data-order-id="{{ order.order_id }}"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-danger cancel-order-btn"
+                          data-order-id="{{ order.order_id }}"
+                        >
+                          Cancel
+                        </button>
+                        {% else %}
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          disabled
+                        >
+                          {{ order.status }}
+                        </button>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>Total Price</th>
+                      <th>Payment Method</th>
+                      <th>Status</th>
+                      <th>View Details</th>
+                      <th>Action</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+  </div>
+  <!-- ./wrapper -->
+</div>
+<!-- /.content-wrapper -->
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="orderDetailModal"
+  tabindex="-1"
+  aria-labelledby="orderDetailModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderDetailModalLabel">Order Details</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Order details will be loaded here via AJAX -->
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Image</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="order-details-content">
+            <!-- Details will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DataTables CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
+/>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#orderTable").DataTable();
+
+    // Handle confirm order button click
+    $(".confirm-order-btn").on("click", function () {
+      var orderId = $(this).data("order-id");
+      var button = $(this);
+
+      // AJAX request to confirm order
+      $.ajax({
+        url: "/dashboardAdmin/confirm-order",
+        method: "POST",
+        data: { order_id: orderId },
+        success: function (response) {
+          button
+            .removeClass("btn-success")
+            .addClass("btn-secondary")
+            .text("Confirmed")
+            .prop("disabled", true);
+          button.closest("tr").find(".cancel-order-btn").remove();
+          button.closest("tr").find("td:eq(5)").text("Confirmed");
+        },
+        error: function () {
+          alert("Error confirming order.");
+        },
+      });
+    });
+
+    // Handle cancel order button click
+    $(".cancel-order-btn").on("click", function () {
+      var orderId = $(this).data("order-id");
+      var button = $(this);
+
+      // AJAX request to cancel order
+      $.ajax({
+        url: "/dashboardAdmin/cancel-order",
+        method: "POST",
+        data: { order_id: orderId },
+        success: function (response) {
+          button
+            .removeClass("btn-danger")
+            .addClass("btn-secondary")
+            .text("Canceled")
+            .prop("disabled", true);
+          button.closest("tr").find(".confirm-order-btn").remove();
+          button.closest("tr").find("td:eq(5)").text("Canceled");
+        },
+        error: function () {
+          alert("Error canceling order.");
+        },
+      });
+    });
+
+    $("#orderDetailModal").on("show.bs.modal", function (event) {
+      var button = $(event.relatedTarget);
+      var orderId = button.data("order-id");
+
+      // AJAX request to get order details
+      $.ajax({
+        url: "/dashboardAdmin/order-details/" + orderId,
+        method: "GET",
+        success: function (data) {
+          var detailsContent = "";
+          data.forEach(function (item) {
+            detailsContent += "<tr>";
+            detailsContent += "<td>" + item.product_name + "</td>";
+            detailsContent +=
+              '<td><img src="/asset/image/uploads/' +
+              item.image +
+              '" alt="' +
+              item.product_name +
+              '" width="100"></td>';
+            detailsContent += "<td>" + item.quantity + "</td>";
+            detailsContent += "<td>" + item.price + "</td>";
+            detailsContent += "</tr>";
+          });
+          $("#order-details-content").html(detailsContent);
+        },
+        error: function () {
+          $("#order-details-content").html(
+            '<tr><td colspan="4">Error loading order details.</td></tr>'
+          );
+        },
+      });
+    });
+  });
+</script>

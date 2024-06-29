@@ -1,0 +1,97 @@
+<!-- Content -->
+<div class="content-wrapper">
+  <section class="content-header"></section>
+  <section class="content">
+    <div class="row">
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>{{ users | length }}</h3>
+            <p>User Registrations</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-person-add"></i>
+          </div>
+          <a href="#" class="small-box-footer"
+            >More info <i class="fas fa-arrow-circle-right"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h1 class="card-title">DATA USER</h1>
+            </div>
+            <a
+              href="/dashboardAdmin/tambah-user"
+              type="button"
+              class="btn btn-success w-25 m-2"
+              >[+] Tambah User</a
+            >
+            <div class="card-body">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>username</th>
+                    <th>email</th>
+                    <th>role</th>
+                    <th>password</th>
+                    <th>aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in users %}
+                  <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role_name }}</td>
+                    <td class="password-cell">{{ user.password }}</td>
+                    <td>
+                      <a
+                        class="btn btn-success"
+                        href="/dashboardAdmin/edit-user/{{ user.id }}"
+                        >Edit</a
+                      >
+                      <a
+                        class="btn btn-danger"
+                        href="/dashboardAdmin/delete-user/{{ user.id }}"
+                        >Hapus</a
+                      >
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>id</th>
+                    <th>username</th>
+                    <th>email</th>
+                    <th>role</th>
+                    <th>password</th>
+                    <th>aksi</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .password-cell {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

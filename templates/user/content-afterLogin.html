@@ -1,0 +1,207 @@
+<!-- Main content -->
+<section class="content mb-5">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-primary mt-5 pb-5">
+          <div class="card-header">
+            <h4 class="card-title">Shoes Product</h4>
+          </div>
+          <div class="card-body">
+            <div>
+              <form method="GET" action="{{ base_url }}/user" class="mb-4">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Search products"
+                    value="{{ search }}"
+                  />
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+              </form>
+              <div class="btn-group w-100 mb-2">
+                <a
+                  class="btn btn-info active"
+                  href="javascript:void(0)"
+                  data-filter="all"
+                  >All products</a
+                >
+                <a
+                  class="btn btn-info"
+                  href="javascript:void(0)"
+                  data-filter="1"
+                  >Category 1 (Nike)</a
+                >
+                <a
+                  class="btn btn-info"
+                  href="javascript:void(0)"
+                  data-filter="2"
+                  >Category 2 (Adidas)</a
+                >
+                <a
+                  class="btn btn-info"
+                  href="javascript:void(0)"
+                  data-filter="3"
+                  >Category 3 (Converse)</a
+                >
+                <a
+                  class="btn btn-info"
+                  href="javascript:void(0)"
+                  data-filter="4"
+                  >Category 4 (Vans)</a
+                >
+              </div>
+              <div class="mb-2">
+                <a
+                  class="btn btn-secondary"
+                  href="javascript:void(0)"
+                  data-shuffle
+                  >Shuffle products</a
+                >
+                <div class="float-right">
+                  <select
+                    class="custom-select"
+                    style="width: auto"
+                    data-sortOrder
+                  >
+                    <option value="index">Sort by Position</option>
+                    <option value="sortData">Sort by Custom Data</option>
+                  </select>
+                  <div class="btn-group">
+                    <a
+                      class="btn btn-default"
+                      href="javascript:void(0)"
+                      data-sortAsc
+                      >Ascending</a
+                    >
+                    <a
+                      class="btn btn-default"
+                      href="javascript:void(0)"
+                      data-sortDesc
+                      >Descending</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="filter-container p-0 row pt-3">
+                {% for product in products %}
+                <div
+                  class="filtr-item col-sm-3"
+                  data-category="{{ product.category_id }}"
+                  data-sort="{{ product.name }}"
+                >
+                  <div class="product">
+                    <div class="imgbox">
+                      <img
+                        src="{{ base_url }}/asset/image/uploads/{{ product.image }}"
+                        class="card-img-top img-fluid mb-2"
+                        alt="{{ product.name }}"
+                      />
+                    </div>
+                    <div class="specifies">
+                      <h2>
+                        {{ product.name }}<br /><span
+                          >{{ product.category_name }}</span
+                        >
+                      </h2>
+                      <div class="price">
+                        ${{ product.price | number_format(2) }}
+                      </div>
+                      <label>{{ product.description }}</label>
+                      <button
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addToCartModal"
+                        data-id="{{ product.product_id }}"
+                        data-name="{{ product.name }}"
+                        data-description="{{ product.description }}"
+                        data-price="{{ product.price }}"
+                        data-image="{{ base_url }}/asset/image/uploads/{{ product.image }}"
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center mt-4">
+                {% for page in 1..total_pages %}
+                <li
+                  class="page-item {% if page == current_page %}active{% endif %}"
+                >
+                  <a
+                    class="page-link"
+                    href="{{ base_url }}/user?page={{ page }}&search={{ search }}"
+                    >{{ page }}</a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="addToCartModal"
+  tabindex="-1"
+  aria-labelledby="addToCartModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addToCartModalLabel">Add to Cart</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <img id="modalImage" src="" class="card-img-top" alt="" />
+          <div class="card-body">
+            <h5 class="card-title" id="modalName"></h5>
+            <p class="card-text" id="modalDescription"></p>
+            <p class="card-text">Price: $<span id="modalPrice"></span></p>
+            <form
+              id="addToCartForm"
+              action="{{ base_url }}/cart/add"
+              method="post"
+            >
+              <input type="hidden" name="product_id" id="modalProductId" />
+              <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="quantity"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

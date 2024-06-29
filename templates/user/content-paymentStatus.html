@@ -1,0 +1,252 @@
+<section class="content mb-5">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-primary mt-5 pb-5">
+          <div class="card-header">
+            <h4 class="card-title">Payment Status</h4>
+          </div>
+          <div class="card-body">
+            <h5>Your Orders</h5>
+            <table id="orderTable" class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                  <th>Payment Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td>{{ order.order_id }}</td>
+                  <td>{{ order.order_date }}</td>
+                  <td>{{ order.total }}</td>
+                  <td>{{ order.status }}</td>
+
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-primary view-details-btn"
+                      data-order-id="{{ order.order_id }}"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                  <td>
+                    {% if order.status == 'Pending' %}
+                    <select
+                      class="payment-method-select"
+                      data-order-id="{{ order.order_id }}"
+                      data-total="{{ order.total }}"
+                    >
+                      <option value="" disabled selected>
+                        Select Payment Method
+                      </option>
+                      <option value="e-wallet">E-Wallet</option>
+                      <option value="bank-transfer">Bank Transfer</option>
+                      <option value="qris">QRIS</option>
+                    </select>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <a href="{{ base_url }}/user" class="btn btn-secondary mt-3"
+              >Continue Shopping</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Payment Method Modal -->
+<div
+  class="modal fade"
+  id="paymentMethodModal"
+  tabindex="-1"
+  aria-labelledby="paymentMethodModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentMethodModalLabel">Payment Method</h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="payment-method-content" class="text-center">
+          <!-- Payment method image will be loaded here -->
+        </div>
+        <form
+          id="payment-form"
+          action="{{ base_url }}/payment/process"
+          method="post"
+        >
+          <input type="hidden" name="order_id" id="modal-order-id" />
+          <input type="hidden" name="amount" id="modal-amount" />
+          <input
+            type="hidden"
+            name="payment_method"
+            id="modal-payment-method"
+          />
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success mt-3">Pay Now</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order Details Modal -->
+<div
+  class="modal fade"
+  id="orderDetailsModal"
+  tabindex="-1"
+  aria-labelledby="orderDetailsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Image</th>
+              <th>Quantity</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody id="order-details-content">
+            <!-- Details will be loaded here -->
+          </tbody>
+        </table>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DataTables CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
+/>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#orderTable").DataTable();
+
+    $(".payment-method-select").on("change", function () {
+      var orderId = $(this).data("order-id");
+      var total = $(this).data("total");
+      var paymentMethod = $(this).val();
+      var paymentImage;
+
+      switch (paymentMethod) {
+        case "e-wallet":
+          paymentImage = "/asset/image/payment-method/EWallet.png";
+          break;
+        case "bank-transfer":
+          paymentImage = "/asset/image/payment-method/BankTransfer.png";
+          break;
+        case "qris":
+          paymentImage = "/asset/image/payment-method/Qris.png";
+          break;
+      }
+
+      $("#payment-method-content").html(
+        '<img src="' +
+          paymentImage +
+          '" alt="' +
+          paymentMethod +
+          '" class="img-fluid">'
+      );
+      $("#modal-order-id").val(orderId);
+      $("#modal-amount").val(total);
+      $("#modal-payment-method").val(paymentMethod);
+
+      $("#paymentMethodModal").modal("show");
+    });
+
+    $(".view-details-btn").on("click", function () {
+      var orderId = $(this).data("order-id");
+
+      // AJAX request to get order details
+      $.ajax({
+        url: "{{ base_url }}/dashboardAdmin/order-details/" + orderId,
+        method: "GET",
+        success: function (data) {
+          var detailsContent = "";
+          data.forEach(function (item) {
+            detailsContent += "<tr>";
+            detailsContent += "<td>" + item.product_name + "</td>";
+            detailsContent +=
+              '<td><img src="/asset/image/uploads/' +
+              item.image +
+              '" alt="' +
+              item.product_name +
+              '" width="100"></td>';
+            detailsContent += "<td>" + item.quantity + "</td>";
+            detailsContent += "<td>" + item.price + "</td>";
+            detailsContent += "</tr>";
+          });
+          $("#order-details-content").html(detailsContent);
+          $("#orderDetailsModal").modal("show");
+        },
+        error: function () {
+          $("#order-details-content").html(
+            '<tr><td colspan="4">Error loading order details.</td></tr>'
+          );
+        },
+      });
+    });
+  });
+</script>
